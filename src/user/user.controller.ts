@@ -3,25 +3,49 @@ import {
   Get,
   Post,
   Body,
-  UsePipes,
-  ValidationPipe,
+  Param,
+  HttpException,
+  Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, LoginUserDto } from './dto/index';
+import { UserByIdPipe } from './userbyid.pipe';
+import { AuthService } from '../auth/auth.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private authService: AuthService,
+  ) {}
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
-  }
-
-  @UsePipes(new ValidationPipe())
   @Post()
   async create(@Body() userData: CreateUserDto) {
-    this.userService.create(userData);
-    return 'Created new user';
+    const user = await this.userService.create(userData);
+    return await this.authService.createToken(user);
+  }
+
+  @Post('login')
+  async login(@Body() loginUserDto: LoginUserDto) {
+    const _user = await this.userService.findOne(loginUserDto);
+
+    const errors = { User: ' not found' };
+    if (!_user)
+      throw new HttpException({ message: 'User login failed', errors }, 401);
+
+    const token = await this.authService.createToken(_user);
+
+    const { email, username } = _user;
+    const user = { email, token, username };
+    return { user };
+  }
+
+  @Delete(':id')
+  async delete(@Param('id', UserByIdPipe) user: any) {
+    await this.userService.delete(user);
+    return {
+      status: 200,
+      message: `Deleted user ${user.id}`,
+    };
   }
 }
