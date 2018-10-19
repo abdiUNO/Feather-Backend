@@ -1,12 +1,15 @@
-import {Entity} from "typeorm";
-
-@Entity()
-export class user.entity {
-
-}
-
-
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BeforeInsert,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
+import { IsEmail } from 'class-validator';
+import * as crypto from 'crypto';
+import { Group } from './group.entity';
 
 @Entity()
 export class User {
@@ -16,9 +19,20 @@ export class User {
   @Column({ length: 500 })
   username: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
+  @IsEmail()
   email: string;
 
   @Column()
   password: string;
+
+  @ManyToMany(type => Group, group => group.users)
+  groups: Group[];
+
+  @BeforeInsert()
+  hashPassword() {
+    this.password = crypto.createHmac('sha256', this.password).digest('hex');
+  }
 }
