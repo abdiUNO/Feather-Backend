@@ -1,15 +1,24 @@
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PostsController } from './posts/posts.controller';
-import { PostsService } from './posts/posts.service';
 import { UserModule } from './user/user.module';
-import {TypeOrm}
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Connection } from 'typeorm';
+import { ConfigModule } from './config/config.module';
+import { AuthModule } from './auth/auth.module';
+import { GroupModule } from './group/group.module';
+
 @Module({
-  imports: [UserModule],
-  controllers: [AppController, PostsController],
-  providers: [AppService, PostsService],
+  imports: [
+    ConfigModule,
+    TypeOrmModule.forRoot(),
+    AuthModule,
+    UserModule,
+    GroupModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {}
+export class AppModule {
+  constructor(private readonly connection: Connection) {}
 }
