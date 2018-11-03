@@ -16,3 +16,6 @@ node_modules/
 .env
 
 .idea
+
+.ormconfig.json
+.DS_Store

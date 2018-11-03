@@ -10,13 +10,17 @@ import { User } from './user.entity';
 
 @Entity()
 export class Group {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
-  @Column()
+  @Column({
+    default: false,
+  })
   isFull: boolean;
 
-  @ManyToMany(type => User, user => user.groups)
+  @ManyToMany(type => User, user => user.groups, {
+    cascade: ['insert'],
+  })
   @JoinTable()
   users: User[];
 }
