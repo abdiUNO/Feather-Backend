@@ -8,21 +8,19 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entity/user.entity';
+import { Group } from '../entity/group.entity';
 import { CreateUserDto, LoginUserDto } from './dto/index';
 import { UserData } from './user.interface';
 import * as crypto from 'crypto';
+import { GroupRepository } from '../repositories/group.repository';
 
 @Injectable()
 export class UserService {
-  private users: UserData[] = [];
-
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(GroupRepository)
+    private readonly groupRepository: GroupRepository,
   ) {}
-
-  async findById(id: number): Promise<User> {
-    return await this.userRepository.findOne({ id });
-  }
 
   async findOne(loginUserDto: LoginUserDto): Promise<User> {
     const findOneOptions = {
@@ -32,11 +30,34 @@ export class UserService {
         .digest('hex'),
     };
 
-    return await this.userRepository.findOne(findOneOptions);
+    return await this.userRepository.findOne({
+      where: findOneOptions,
+      relations: ['groups'],
+    });
   }
 
-  async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+  async joinGroup(user: User) {
+    const errors = { groups: 'joined max groups' };
+
+    if (user.groups.length >= 3) {
+      throw new HttpException(
+        { message: 'User already joined max amount of groups(3)', errors },
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const ids = user.groups.map(g => g.id);
+    const group = await this.groupRepository.findOrCreate(ids);
+
+    delete user.groups;
+    group.users.push(user);
+
+    return this.groupRepository.save(group);
+  }
+
+  async leaveGroup(user, group) {
+    group.users = group.users.filter(u => u.id !== user.id);
+    return this.groupRepository.save(group);
   }
 
   async create(data: UserData): Promise<User> {
@@ -52,10 +73,13 @@ export class UserService {
       );
     }
 
+    const group = await this.groupRepository.findOrCreate([]);
+
     const user = new User();
     user.username = data.username;
     user.password = data.password;
     user.email = data.email;
+    user.groups = [group];
 
     return await this.userRepository.save(user);
   }
