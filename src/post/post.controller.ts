@@ -26,8 +26,8 @@ export class PostController {
   }
 
   @Get(':id/comments')
-  async getComments(@Param('id') postId: any) {
-    return this.postService.getComments(postId);
+  async getComments(@Req() request, @Param('id') postId: any) {
+    return this.postService.getComments(postId, request.user);
   }
 
   @Post(':id/comment')
@@ -60,11 +60,15 @@ export class PostController {
   }
 
   @Put(':id/vote')
-  async vote(@Req() request, @Param('id') id, @Query('dir') dir: string) {
+  async vote(
+    @Req() request,
+    @Param('id', PostByIdPipe) post,
+    @Query('dir') dir: string,
+  ) {
     const saved = await this.postService.createVote(
       parseInt(dir, 2),
       request.user,
-      id,
+      post,
     );
 
     if (saved)
@@ -73,6 +77,8 @@ export class PostController {
         postId: saved.postId,
         userId: saved.userId,
         dir: saved.dir,
+        createdAt: saved.createdAt,
+        updatedAt: saved.updatedAt,
       };
     else throw new HttpException({ message: 'Could not save vote' }, 401);
   }

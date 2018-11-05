@@ -60,4 +60,12 @@ export class User {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
+
+  @Column('simple-array')
+  subscription: string[];
+
+  @Column({
+    default: '',
+  })
+  image: string;
 }

@@ -9,6 +9,11 @@ import {
   Delete,
   Req,
   UseGuards,
+  Query,
+  UseInterceptors,
+  FileInterceptor,
+  UploadedFile,
+  Res,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, LoginUserDto } from './dto/index';
@@ -16,6 +21,9 @@ import { UserByIdPipe } from './userbyid.pipe';
 import { AuthService } from '../auth/auth.service';
 import { GroupByIdPipe } from '../group/groupbyid.pipe';
 import { AuthGuard } from '@nestjs/passport';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { join } from 'path';
 
 @Controller('user')
 export class UserController {
@@ -36,6 +44,20 @@ export class UserController {
     const token = await this.authService.createToken(user);
 
     return { ...user, token };
+  }
+
+  @Put('subscribe')
+  @UseGuards(AuthGuard())
+  async subscribeToGroup(@Req() request, @Query('category') group) {
+    const user = request.user;
+    return this.userService.subscribeToGroup(user, group);
+  }
+
+  @Put('unsubscribe')
+  @UseGuards(AuthGuard())
+  async unsubscribeToGroup(@Req() request, @Query('category') group) {
+    const user = request.user;
+    return this.userService.unsubscribeToGroup(user, group);
   }
 
   @Put(':id/group')
@@ -86,5 +108,23 @@ export class UserController {
       status: 200,
       message: `Deleted user ${user.id}`,
     };
+  }
+
+  @Put('image')
+  @UseGuards(AuthGuard())
+  async uploadFile(@Req() request, @Res() response) {
+    try {
+      await this.userService.saveImage(request, response, request.user);
+    } catch (error) {
+      return response
+        .status(500)
+        .json(`Failed to upload image file: ${error.message}`);
+    }
+  }
+
+  @Get('images/:imgId')
+  getImage(@Req() request, @Param('imgId') imgId, @Res() res) {
+    const imgPath = join(__dirname, '..', `uploads/${request.user.image}`);
+    return res.sendFile(imgPath);
   }
 }

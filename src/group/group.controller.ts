@@ -5,14 +5,24 @@ import {
   Body,
   Post,
   HttpException,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { UserByIdPipe } from '../user/userbyid.pipe';
 import { GroupByIdPipe } from './groupbyid.pipe';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('group')
+@UseGuards(AuthGuard())
 export class GroupController {
   constructor(private groupService: GroupService) {}
+
+  @Get()
+  async getGroups(@Req() request) {
+    const groups = await this.groupService.findAll(request.user);
+    return groups;
+  }
 
   @Get(':id')
   findOne(@Param('id') id) {

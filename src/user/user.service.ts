@@ -4,6 +4,8 @@ import {
   NotFoundException,
   HttpException,
   HttpStatus,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -13,6 +15,18 @@ import { CreateUserDto, LoginUserDto } from './dto/index';
 import { UserData } from './user.interface';
 import * as crypto from 'crypto';
 import { GroupRepository } from '../repositories/group.repository';
+import * as multer from 'multer';
+import * as aws from 'aws-sdk';
+import * as multerS3 from 'multer-s3';
+import { extname } from 'path';
+
+const spacesEndpoint = new aws.Endpoint('nyc3.digitaloceanspaces.com');
+const s3 = new aws.S3({
+  region: 'nyc3',
+  endpoint: 'https://nyc3.digitaloceanspaces.com',
+  accessKeyId: 'LZMAJKITMD5LEY5L2GHT',
+  secretAccessKey: 'YELzsq0dQXF21C/Px4RmkP1oFO1klDKktEhVPmCAe3k',
+});
 
 @Injectable()
 export class UserService {
@@ -60,7 +74,7 @@ export class UserService {
     return this.groupRepository.save(group);
   }
 
-  async create(data: UserData): Promise<User> {
+  async create(data: CreateUserDto): Promise<User> {
     const emailExists = await this.userRepository.findOne({
       email: data.email,
     });
@@ -80,6 +94,7 @@ export class UserService {
     user.password = data.password;
     user.email = data.email;
     user.groups = [group];
+    user.subscription = [];
 
     return await this.userRepository.save(user);
   }
@@ -87,4 +102,51 @@ export class UserService {
   async delete(user: User): Promise<any> {
     return await this.userRepository.delete(user);
   }
+
+  async subscribeToGroup(user: User, group: string) {
+    user.subscription.push(group);
+    return this.userRepository.save(user);
+  }
+
+  async unsubscribeToGroup(user: User, group: string) {
+    user.subscription = user.subscription.filter(
+      category => category !== group,
+    );
+    return this.userRepository.save(user);
+  }
+
+  async saveImage(@Req() req, @Res() res, user: User) {
+    try {
+      this.upload(req, res, error => {
+        if (error) {
+          return res.status(404).json(`Failed to upload image file: ${error}`);
+        }
+        const image = req.files[0].key;
+        user.image = image;
+        this.userRepository.save(user);
+        return res.status(201).json({
+          image,
+          user: user.id,
+        });
+      });
+    } catch (error) {
+      return res.status(500).json(`Failed to upload image file: ${error}`);
+    }
+  }
+
+  upload = multer({
+    storage: multerS3({
+      s3,
+      bucket: 'feather',
+      acl: 'public-read',
+      key: (request, file, cb) => {
+        const randomName = Array(32)
+          .fill(null)
+          .map(() => Math.round(Math.random() * 16).toString(16))
+          .join('');
+
+        cb(null, `${randomName}${extname(file.originalname)}`);
+      },
+    }),
+  }).array('file', 1);
 }

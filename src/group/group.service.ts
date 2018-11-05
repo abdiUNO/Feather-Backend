@@ -9,6 +9,19 @@ export class GroupService {
     private readonly groupRepository: GroupRepository,
   ) {}
 
+  findAll(user) {
+    return this.groupRepository
+      .createQueryBuilder('group')
+      .innerJoinAndSelect('group.users', 'user', 'user.id = :userId', {
+        userId: user.id,
+      })
+      .getMany();
+    // return this.groupRepository.find({
+    //   where: { userId: user.id },
+    //   relations: ['users'],
+    // });
+  }
+
   findById(id) {
     return this.groupRepository.findOne({
       where: { id },

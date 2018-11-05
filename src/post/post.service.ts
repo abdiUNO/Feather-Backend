@@ -28,14 +28,9 @@ export class PostService {
     return this.postRepository.save(post);
   }
 
-  async createVote(dir: number, user: User, postId) {
+  async createVote(dir: number, user: User, post: Post) {
     const voteExists = await this.voteRepository.findOne({
-      where: { userId: user.id, postId },
-    });
-
-    const post = await this.postRepository.findOne({
-      where: { id: postId },
-      relations: ['votes'],
+      where: { userId: user.id, postId: post.id },
     });
 
     let vote = null;
@@ -59,8 +54,10 @@ export class PostService {
   async findAll(user) {
     return this.postRepository
       .createQueryBuilder('post')
+      .where('post.category IN (:subscriptions)', {
+        subscriptions: user.subscription,
+      })
       .leftJoinAndSelect('post.user', 'user')
-      .leftJoinAndSelect('post.comments', 'comments')
       .leftJoinAndMapOne(
         'post.voted',
         'post.votes',
@@ -75,11 +72,26 @@ export class PostService {
       .getMany();
   }
 
-  async getComments(postId: any) {
-    return this.postRepository.findOne({
-      where: { id: postId },
-      relations: ['comments', 'comments.user'],
-    });
+  async getComments(postId: any, user) {
+    return this.commentRepository
+      .createQueryBuilder('comment')
+      .where('postId = :postId', { postId })
+      .leftJoinAndSelect('comment.user', 'user')
+      .getMany();
+
+    // return this.postRepository
+    //   .createQueryBuilder('post')
+    //   .where('post.id = :postId', { postId })
+    //   .leftJoinAndSelect('post.user', 'user')
+    //   .leftJoinAndSelect('post.comments', 'comments')
+    //   .leftJoinAndSelect('comments.user', 'comments.user')
+    //   .leftJoinAndMapOne(
+    //     'post.voted',
+    //     'post.votes',
+    //     'vote',
+    //     `vote.userId = "${user.id}"`,
+    //   )
+    //   .getOne();
   }
 
   async createComment(dto: CreateCommentDto, post: Post, user: User) {
