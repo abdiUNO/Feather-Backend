@@ -19,3 +19,5 @@ node_modules/
 
 .ormconfig.json
 .DS_Store
+
+src/uploads
