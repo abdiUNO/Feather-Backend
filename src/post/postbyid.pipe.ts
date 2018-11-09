@@ -15,9 +15,7 @@ export class PostByIdPipe implements PipeTransform {
   ) {}
 
   async transform(value: any, metadata: ArgumentMetadata) {
-    const post = await this.postRepository.findOne({
-      where: { id: value },
-    });
+    const post = await this.postRepository.findOne(value);
 
     if (!post)
       throw new NotFoundException(`Could not find post by id ${value}`);

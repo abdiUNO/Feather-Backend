@@ -52,6 +52,9 @@ export class PostService {
   }
 
   async findAll(user) {
+    user.subscription =
+      user.subscription.length > 0 ? user.subscription : ['General'];
+
     return this.postRepository
       .createQueryBuilder('post')
       .where('post.category IN (:subscriptions)', {
@@ -78,20 +81,6 @@ export class PostService {
       .where('postId = :postId', { postId })
       .leftJoinAndSelect('comment.user', 'user')
       .getMany();
-
-    // return this.postRepository
-    //   .createQueryBuilder('post')
-    //   .where('post.id = :postId', { postId })
-    //   .leftJoinAndSelect('post.user', 'user')
-    //   .leftJoinAndSelect('post.comments', 'comments')
-    //   .leftJoinAndSelect('comments.user', 'comments.user')
-    //   .leftJoinAndMapOne(
-    //     'post.voted',
-    //     'post.votes',
-    //     'vote',
-    //     `vote.userId = "${user.id}"`,
-    //   )
-    //   .getOne();
   }
 
   async createComment(dto: CreateCommentDto, post: Post, user: User) {

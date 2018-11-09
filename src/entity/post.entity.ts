@@ -107,12 +107,6 @@ export class Post {
   })
   commentsCount: number;
 
-  @OneToOne(type => User, {
-    eager: true,
-    nullable: true,
-  })
-  voted: User;
-
   @OneToMany(type => Vote, vote => vote.post)
   votes: Vote[];
 
