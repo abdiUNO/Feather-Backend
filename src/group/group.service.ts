@@ -10,6 +10,7 @@ export class GroupService {
   ) {}
 
   findAll(user) {
+    console.log(user.groups);
     return this.groupRepository
       .createQueryBuilder('group')
       .innerJoinAndSelect('group.users', 'user', 'user.id = :userId', {

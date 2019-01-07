@@ -20,8 +20,9 @@ export class GroupController {
 
   @Get()
   async getGroups(@Req() request) {
-    const groups = await this.groupService.findAll(request.user);
-    return groups;
+    return request.user.groups;
+    //const groups = await this.groupService.findAll(request.user);
+    //return groups;
   }
 
   @Get(':id')

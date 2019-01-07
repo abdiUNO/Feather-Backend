@@ -22,6 +22,8 @@ export class AuthService {
   }
 
   async validateUser(payload: any): Promise<any> {
-    return await this.userRepository.findOne(payload.id);
+    return await this.userRepository.findOne(payload.id, {
+      relations: ['groups', 'groups.users'],
+    });
   }
 }

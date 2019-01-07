@@ -20,12 +20,12 @@ import * as aws from 'aws-sdk';
 import * as multerS3 from 'multer-s3';
 import { extname } from 'path';
 
-const spacesEndpoint = new aws.Endpoint('nyc3.digitaloceanspaces.com');
+const spacesEndpoint = new aws.Endpoint('sfo2.digitaloceanspaces.com');
 const s3 = new aws.S3({
-  region: 'nyc3',
-  endpoint: 'https://nyc3.digitaloceanspaces.com',
-  accessKeyId: 'LZMAJKITMD5LEY5L2GHT',
-  secretAccessKey: 'YELzsq0dQXF21C/Px4RmkP1oFO1klDKktEhVPmCAe3k',
+  region: 'sfo2',
+  endpoint: 'https://sfo2.digitaloceanspaces.com',
+  accessKeyId: '6F7TJUERMUWIKSK5ECE6',
+  secretAccessKey: 'lsVOQLkasuCIM3vltBe1b1XVnJeFHJfdt9brklP6zUU',
 });
 
 @Injectable()
@@ -88,7 +88,7 @@ export class UserService {
     }
 
     const group = await this.groupRepository.findOrCreate([]);
-
+    console.log(group);
     const user = new User();
     user.username = data.username;
     user.password = data.password;

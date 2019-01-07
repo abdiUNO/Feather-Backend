@@ -7,10 +7,18 @@ export class GroupRepository extends Repository<Group> {
   async findOrCreate(excludeIds?) {
     let whereQuery: any = {};
 
-    let group = await this.findOne({
-      where: { id: !excludeIds, isFull: false },
-      relations: ['users'],
-    });
+    console.log(excludeIds.join());
+
+    if (excludeIds.length === 0) excludeIds.push('');
+
+    let group = await this.createQueryBuilder('group')
+      .where('group.id NOT IN (:exclude_ids) AND group.isFull = false', {
+        exclude_ids: excludeIds,
+      })
+      .leftJoinAndSelect('group.users', 'users')
+      .getOne();
+
+    console.log(group);
 
     if (group) {
       group.isFull = group.users.length === 2;
