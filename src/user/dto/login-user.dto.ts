@@ -2,7 +2,12 @@ import { IsNotEmpty, IsEmail } from 'class-validator';
 
 export class LoginUserDto {
   @IsNotEmpty()
-  @IsEmail()
+  @IsEmail(
+    {},
+    {
+      message: 'Invalid e-mail address. Please try Again',
+    },
+  )
   readonly email: string;
 
   @IsNotEmpty()

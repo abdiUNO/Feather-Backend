@@ -16,6 +16,7 @@ import {
 import { User } from './user.entity';
 import { Vote } from './vote.entity';
 import { Comment } from './comment.entity';
+import { MicroLink } from './microlink.entity';
 
 function getRandomColor() {
   const color = [
@@ -109,6 +110,11 @@ export class Post {
 
   @OneToMany(type => Vote, vote => vote.post)
   votes: Vote[];
+
+  @OneToMany(type => MicroLink, link => link.post, {
+    eager: true,
+  })
+  links: MicroLink[];
 
   @Column()
   userId: string;

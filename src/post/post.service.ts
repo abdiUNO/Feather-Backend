@@ -8,6 +8,9 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { Comment } from '../entity/comment.entity';
+import { MicroLink } from '../entity/microlink.entity';
+import * as getUrls from 'get-urls';
+import * as rp from 'request-promise';
 
 @Injectable()
 export class PostService {
@@ -17,6 +20,8 @@ export class PostService {
     @InjectRepository(Vote) private readonly voteRepository: Repository<Vote>,
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
+    @InjectRepository(MicroLink)
+    private readonly microLinkRepository: Repository<MicroLink>,
   ) {}
   async create(dto: CreatePostDto, user: User) {
     const post = new Post();
@@ -24,6 +29,29 @@ export class PostService {
     post.category = dto.category;
     post.user = user;
     post.category = dto.category;
+
+    const urls = Array.from(getUrls(dto.text));
+    const links = [];
+
+    if (urls.length > 0) {
+      for (const url of urls) {
+        let response = await rp(`https://api.microlink.io/?url=${url}&video`);
+        let data = JSON.parse(response).data;
+
+        console.log(data.video !== null);
+
+        let link = new MicroLink();
+
+        link.title = data.title;
+        if (data.image !== null) link.image = data.image.url;
+        link.description = data.description;
+        link.logo = data.logo.url;
+        link.url = data.url;
+        links.push(await this.microLinkRepository.save(link));
+      }
+    }
+
+    post.links = links;
 
     return this.postRepository.save(post);
   }
@@ -59,6 +87,31 @@ export class PostService {
       .createQueryBuilder('post')
       .where('post.category IN (:subscriptions)', {
         subscriptions: user.subscription,
+      })
+      .leftJoinAndSelect('post.user', 'user')
+      .leftJoinAndSelect('post.links', 'links')
+      .leftJoinAndMapOne(
+        'post.voted',
+        'post.votes',
+        'vote',
+        `vote.userId = "${user.id}"`,
+      )
+      .orderBy(
+        `LOG10(ABS(post.votesCount) + 1) * SIGN(post.votesCount) + (UNIX_TIMESTAMP(post.createdAt)/300000)`,
+        'DESC',
+      )
+      .limit(100)
+      .getMany();
+  }
+
+  async findByGroup(user, category) {
+    user.subscription =
+      user.subscription.length > 0 ? user.subscription : ['General'];
+
+    return this.postRepository
+      .createQueryBuilder('post')
+      .where('post.category = :category', {
+        category,
       })
       .leftJoinAndSelect('post.user', 'user')
       .leftJoinAndMapOne(

@@ -9,20 +9,32 @@ import {
   Param,
   Put,
   HttpException,
+  HttpService,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { PostByIdPipe } from './postbyid.pipe';
+import * as getUrls from 'get-urls';
+import * as rp from 'request-promise';
+
 @Controller('post')
 @UseGuards(AuthGuard())
 export class PostController {
-  constructor(private readonly postService: PostService) {}
+  constructor(
+    private readonly postService: PostService,
+    private readonly httpService: HttpService,
+  ) {}
 
   @Get()
   findAll(@Req() request) {
     return this.postService.findAll(request.user);
+  }
+
+  @Get('category/:id')
+  findByGroup(@Req() request, @Param('id') category: any) {
+    return this.postService.findByGroup(request.user, category);
   }
 
   @Get(':id/comments')

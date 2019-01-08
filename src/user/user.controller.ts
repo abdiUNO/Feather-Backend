@@ -93,7 +93,10 @@ export class UserController {
 
     const errors = { User: ' not found' };
     if (!_user)
-      throw new HttpException({ message: 'User login failed', errors }, 401);
+      throw new HttpException(
+        { message: 'Incorrect email or password.', errors },
+        401,
+      );
 
     const token = await this.authService.createToken(_user);
 
