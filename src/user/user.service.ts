@@ -134,6 +134,22 @@ export class UserService {
     }
   }
 
+  async uploadImage(@Req() req, @Res() res) {
+    try {
+      this.upload(req, res, error => {
+        if (error) {
+          return res.status(404).json(`Failed to upload image file: ${error}`);
+        }
+        const image = req.files[0].key;
+        return res.status(201).json({
+          image,
+        });
+      });
+    } catch (error) {
+      return res.status(500).json(`Failed to upload image file: ${error}`);
+    }
+  }
+
   upload = multer({
     storage: multerS3({
       s3,

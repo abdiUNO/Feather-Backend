@@ -33,7 +33,9 @@ export class PostService {
     const urls = Array.from(getUrls(dto.text));
     const links = [];
 
-    if (urls.length > 0) {
+    if (dto.image) {
+      post.image = dto.image;
+    } else if (urls.length > 0) {
       for (const url of urls) {
         let response = await rp(`https://api.microlink.io/?url=${url}&video`);
         let data = JSON.parse(response).data;

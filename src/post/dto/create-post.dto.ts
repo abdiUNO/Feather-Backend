@@ -8,4 +8,6 @@ export class CreatePostDto {
   readonly category: string;
 
   readonly color: string;
+
+  readonly image: string;
 }

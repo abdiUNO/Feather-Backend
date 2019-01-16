@@ -125,6 +125,18 @@ export class UserController {
     }
   }
 
+  @Post('image')
+  @UseGuards(AuthGuard())
+  async ulpoadImage(@Req() request, @Res() response) {
+    try {
+      await this.userService.uploadImage(request, response);
+    } catch (error) {
+      return response
+        .status(500)
+        .json(`Failed to upload image file: ${error.message}`);
+    }
+  }
+
   @Get('images/:imgId')
   getImage(@Req() request, @Param('imgId') imgId, @Res() res) {
     const imgPath = join(__dirname, '..', `uploads/${request.user.image}`);

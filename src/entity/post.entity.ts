@@ -146,7 +146,14 @@ export class Post {
   })
   color: string;
 
+  @Column({
+    type: 'longtext',
+    nullable: true,
+  })
+  image: string;
+
   @AfterInsert()
+  @AfterLoad()
   updateCounters() {
     this.color = getRandomColor();
   }
