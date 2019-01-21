@@ -44,10 +44,16 @@ export class UserService {
         .digest('hex'),
     };
 
-    return await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: findOneOptions,
       relations: ['groups'],
     });
+
+    if (loginUserDto.fcmToken) user.fcmToken = loginUserDto.fcmToken;
+
+    this.userRepository.save(user);
+
+    return user;
   }
 
   async joinGroup(user: User) {
@@ -88,13 +94,14 @@ export class UserService {
     }
 
     const group = await this.groupRepository.findOrCreate([]);
-    console.log(group);
     const user = new User();
     user.username = data.username;
     user.password = data.password;
     user.email = data.email;
     user.groups = [group];
     user.subscription = [];
+
+    if (data.fcmToken) user.fcmToken = data.fcmToken;
 
     return await this.userRepository.save(user);
   }

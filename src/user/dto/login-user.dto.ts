@@ -12,4 +12,6 @@ export class LoginUserDto {
 
   @IsNotEmpty()
   readonly password: string;
+
+  readonly fcmToken: string;
 }

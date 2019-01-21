@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "feather-test",
+  "private_key_id": "13123ea5aec6fe330ac06e63752182d7f570803f",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCRtSFZyAwIi7m3\nKnFuKo8qbWXeqPCnColVswvtb5KuMfWTGIPqbnWU1LD2Xt3V8Ng8QX8GsDOtjORX\ngwpfO32MbRnRkVjuOuiV00rERnW4oZHwPxur6M8+69BpT+Iju/rFwj6PkcFhTmKJ\nYbz8nOlOrueI03uCASA025BstTcWNOdj/xfnkuqPH61HnEprWFpCsAOOvDy+8jnd\nbekPZAiL2my70JphwoRxpxNgZOIccJLmiVAXrb1KqtHwhU3rMxqSG2MC993rD2tW\na4YzaiLVJVtECu0vxCBhKBNyIWTA6U+ILo+0zl/3tSQXYj3Gl1SVAeEH7E9O9VkH\nKH4zuH3NAgMBAAECggEACyEgiC45YRO5yUMC1q0wh0dDjzOB7OMR+gugNHAfw5If\nAFp7L6u6lnYn2CxchGwOOuKufwZ0GWRYHVPDNeKiOdjW2S+MG+eVqWVct3ZBpVXO\nAwxG+FANjcWkWHmYu9hZahk7/xUH239fE8BKl6mtQRcnVJ0BY5I4xrYjUh0GCqTn\n8wTeizt7nTR4qnLqyOyMO4xzYXJeFJGNw32+q2cLJ9cHTMH++kg17evEO1b7HVFD\nvjOMqHrv7g+ntUlE/dXSAv76x8C30idK3NO2Ac5Xew1McMKRpbACopkg8iJEIPLa\nc9jGvWrUsFEH5QA+pDMK7b+aWwkYlFGJGXqVZc4+QQKBgQDNDwbLWkbDesX48S3i\nGIhvMbjxndX7GA16ns772iU4Hldd9oI7oxuxO4XOY6WjYgIhqkhBD+8bFDDWiGK6\nRngEat/hO59I+QNKlJ1PCK7BEFb4ejaMBn3++wDg+4cumIjGIoe2DLMif29hwVck\n4ljUn9MtPhS8u1T9+PmE3tV/7QKBgQC155cLP8JCthPNXcqPGJJnyukYaDBKCs5u\n0MvnonqPZniB0mQ2R0wrAQ/U0pRZYfb+Ea6Q3ZMXnTIvLkvmpbzXdu9jMYNxMkp3\nmrJK90RWjrPV/v1QR8M4Y7xsIK0AL2a60GDixExUVJ3P3p+ghvI8CXmZu9/tmjEp\n6tYORUx5YQKBgC/tsTLamOubyKYVCRptjYYf4xBmSdt0lcHxWIO5SzXAsb7+nRX/\nW7ujI/VHiTGU+NaRjG3YoZR8taWPHzRWwDqYGFf2rZZKzaAi+Fm+t8ncXdeaCSHV\naqGsXVo4sDIN6PoWnA3LDhukGY6JuCqg1Q5thNhwSDyMtKLgDMInq1NJAoGAWwA6\nzgPdmSYhjfHH7gJq68XVCsLEtaXmVAXcnErqaWboDnpEa+sLLdBgLSYT1QtvVvdd\nj1dpyLx5aKUOj5qGeHwlkkgo664vFtqrK1m8NFk7mmjwLQNZpJIwpx9JrPgJupeY\ngJmXXfDe6ikDTnl0IZjT3pbglas3wTKcV5NPiMECgYBfaK8Gt3sWBgyd4yYjjkgk\nykmmcSs+XCGxuHL1nZlBqIZOUraQse7/sKlrBs38WUh5hm4G+nUFxzf/nPxFQT6F\njVErbFd8OsYMyHTqwRIOUmZUxTCEHIVIrnWvXCTZYCJ2yQrbH/c6Uz3u/5xEDiCU\ntvDP9ArdbxlBHTkcb/u8Gg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "notifications@feather-test.iam.gserviceaccount.com",
+  "client_id": "118405484127357434588",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/notifications%40feather-test.iam.gserviceaccount.com"
+}

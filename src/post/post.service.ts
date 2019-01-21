@@ -11,6 +11,19 @@ import { Comment } from '../entity/comment.entity';
 import { MicroLink } from '../entity/microlink.entity';
 import * as getUrls from 'get-urls';
 import * as rp from 'request-promise';
+import * as admin from 'firebase-admin';
+import * as serviceAccountJson from '../feather-test.json';
+
+const serviceAccount = {
+  projectId: serviceAccountJson.project_id,
+  clientEmail: serviceAccountJson.client_email,
+  privateKey: serviceAccountJson.private_key,
+};
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://feather-test.firebaseio.com',
+});
 
 @Injectable()
 export class PostService {
@@ -146,5 +159,25 @@ export class PostService {
     comment.user = user;
 
     return this.commentRepository.save(comment);
+  }
+
+  async sendNotification(comment: string, post: Post, user: User) {
+    console.log(post.user.fcmToken);
+
+    const message = {
+      notification: {
+        body: `@${user.username} replied to your post!`,
+        title: 'Featherr',
+      },
+      data: {
+        postId: `${post.id}`,
+        userId: `${user.id}`,
+        username: `${user.username}`,
+        message: comment,
+      },
+      token: post.user.fcmToken,
+    };
+
+    return admin.messaging().send(message);
   }
 }

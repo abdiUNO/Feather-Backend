@@ -16,8 +16,6 @@ import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { PostByIdPipe } from './postbyid.pipe';
-import * as getUrls from 'get-urls';
-import * as rp from 'request-promise';
 
 @Controller('post')
 @UseGuards(AuthGuard())
@@ -48,11 +46,15 @@ export class PostController {
     @Body() data: CreateCommentDto,
     @Req() request,
   ) {
+    console.log('Creating comment');
+
     const comment = await this.postService.createComment(
       data,
       post,
       request.user,
     );
+
+    this.postService.sendNotification(data.text, post, request.user);
 
     return {
       id: comment.id,

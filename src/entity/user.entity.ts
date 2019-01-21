@@ -68,4 +68,9 @@ export class User {
     default: '',
   })
   image: string;
+
+  @Column({
+    nullable: true,
+  })
+  fcmToken: string;
 }

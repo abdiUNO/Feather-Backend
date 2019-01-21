@@ -12,4 +12,6 @@ export class CreateUserDto {
   readonly password: string;
 
   readonly subscriptions: string[];
+
+  readonly fcmToken: string;
 }
