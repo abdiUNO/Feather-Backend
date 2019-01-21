@@ -148,7 +148,7 @@ export class PostService {
       .createQueryBuilder('comment')
       .where('postId = :postId', { postId })
       .leftJoinAndSelect('comment.user', 'user')
-      .orderBy('comment.createdAt', 'DESC')
+      .orderBy('comment.createdAt', 'ASC')
       .getMany();
   }
 
