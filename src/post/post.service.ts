@@ -166,10 +166,10 @@ export class PostService {
     if (post.user.id === user.id) return;
 
     const message = {
-      // notification: {
-      //   body: `@${user.username} replied to your post!`,
-      //   title: 'Featherr',
-      // },
+      notification: {
+        body: `@${user.username} replied to your post!`,
+        title: 'Featherr',
+      },
       data: {
         postId: `${post.id}`,
         userId: `${user.id}`,
