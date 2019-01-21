@@ -162,7 +162,7 @@ export class PostService {
   }
 
   async sendNotification(comment: string, post: Post, user: User) {
-    console.log(post.user.fcmToken);
+    if (post.user.id === user.id) return;
 
     const message = {
       notification: {

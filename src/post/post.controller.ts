@@ -46,8 +46,6 @@ export class PostController {
     @Body() data: CreateCommentDto,
     @Req() request,
   ) {
-    console.log('Creating comment');
-
     const comment = await this.postService.createComment(
       data,
       post,
