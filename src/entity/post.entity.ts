@@ -42,7 +42,10 @@ function getRandomColor() {
     '#d32f2f',
   ];
 
-  return color[Math.floor(Math.random() * color.length)];
+  const min = Math.ceil(0);
+  const max = Math.floor(color.length);
+
+  return color[Math.floor(Math.random() * (max - min)) + min];
 }
 
 function randomDate(date1, date2) {
