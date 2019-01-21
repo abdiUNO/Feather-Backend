@@ -166,16 +166,19 @@ export class PostService {
     if (post.user.id === user.id) return;
 
     const message = {
+      // notification: {
+      //   body: `@${user.username} replied to your post!`,
+      //   title: 'Featherr',
+      // },
       data: {
         postId: `${post.id}`,
         userId: `${user.id}`,
         username: `${user.username}`,
         message: comment,
       },
+      token: post.user.fcmToken,
     };
 
-    return admin
-      .messaging()
-      .sendToDevice(post.user.fcmToken, message, { priority: 'high' });
+    return admin.messaging().send(message);
   }
 }
