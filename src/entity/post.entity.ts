@@ -153,7 +153,6 @@ export class Post {
   image: string;
 
   @AfterInsert()
-  @AfterLoad()
   updateCounters() {
     this.color = getRandomColor();
   }
