@@ -37,7 +37,9 @@ export class PostController {
 
   @Get(':id/comments')
   async getComments(@Req() request, @Param('id') postId: any) {
-    return this.postService.getComments(postId, request.user);
+    const comments = await this.postService.getComments(postId, request.user);
+    comments.reverse();
+    return comments;
   }
 
   @Post(':id/comment')
