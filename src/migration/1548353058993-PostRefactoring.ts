@@ -10,24 +10,6 @@ export class PostRefactoring1548353058993 implements MigrationInterface {
     await queryRunner.addColumn(
       'post',
       new TableColumn({
-        name: 'links',
-        type: 'int',
-        isNullable: true,
-      }),
-    );
-
-    await queryRunner.createForeignKey(
-      'post',
-      new TableForeignKey({
-        columnNames: ['links'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'microlink',
-      }),
-    );
-
-    await queryRunner.addColumn(
-      'post',
-      new TableColumn({
         name: 'image',
         type: 'longtext',
         isNullable: true,
@@ -36,12 +18,6 @@ export class PostRefactoring1548353058993 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<any> {
-    const table = await queryRunner.getTable('links');
-    const foreignKey = table.foreignKeys.find(
-      fk => fk.columnNames.indexOf('links') !== -1,
-    );
-    await queryRunner.dropForeignKey('post', foreignKey);
-    await queryRunner.dropColumn('post', 'links');
     await queryRunner.dropColumn('post', 'image');
   }
 }
