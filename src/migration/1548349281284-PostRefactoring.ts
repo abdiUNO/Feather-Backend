@@ -7,6 +7,14 @@ import {
 
 export class PostRefactoring1548349281284 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {
+    await queryRunner.addColumn(
+      'post',
+      new TableColumn({
+        name: 'links',
+        type: 'int',
+      }),
+    );
+
     await queryRunner.createForeignKey(
       'post',
       new TableForeignKey({
@@ -32,6 +40,7 @@ export class PostRefactoring1548349281284 implements MigrationInterface {
       fk => fk.columnNames.indexOf('links') !== -1,
     );
     await queryRunner.dropForeignKey('post', foreignKey);
+    await queryRunner.dropColumn('post', 'links');
     await queryRunner.dropColumn('post', 'image');
   }
 }
