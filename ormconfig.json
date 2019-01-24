@@ -7,7 +7,9 @@
   "database": "feather",
   "entities": ["src/**/**.entity{.ts,.js}"],
   "synchronize": true,
+  "migrations": ["src/migration/*.ts"],
   "cli": {
-    "entitiesDir": "src/entity"
+      "migrationsDir": "src/migration",
+      "entitiesDir": "src/entity"
   }
 }
