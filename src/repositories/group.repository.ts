@@ -12,7 +12,7 @@ export class GroupRepository extends Repository<Group> {
     if (excludeIds.length === 0) excludeIds.push('');
 
     let group = await this.createQueryBuilder('group')
-      .where('group.id NOT IN (:exclude_ids) AND group.isFull = false', {
+      .where('group.id NOT IN (:exclude_ids) AND group.isFull = 0', {
         exclude_ids: excludeIds,
       })
       .leftJoinAndSelect('group.users', 'users')
